@@ -23,7 +23,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    // กำหนด Path เต็มให้ตรงกับที่ไฟล์ swagger.json ถูกสร้างขึ้นจริง
+    // กำหนด Absolute Path ให้ชัดเจน (ต้องมี / นำหน้า ห้ามใช้ ./)
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
     c.RoutePrefix = "swagger";
 });
