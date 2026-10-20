@@ -1,28 +1,32 @@
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ลงทะเบียน Supabase Client (ปรับแก้รองรับ Supabase SDK v8.x เรียบร้อย)
-builder.Services.AddScoped<Supabase.Client>(_ => 
-    new Supabase.Client(
-        builder.Configuration["Supabase:Url"]!,
-        builder.Configuration["Supabase:Key"]!
-    ));
-
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+// Supabase Config
+var supabaseUrl = builder.Configuration["Supabase:Url"] 
+                  ?? builder.Configuration["Supabase__Url"];
+var supabaseKey = builder.Configuration["Supabase:Key"] 
+                  ?? builder.Configuration["Supabase__Key"];
 
-// เปิดใช้งาน Swagger UI สำหรับทดสอบ API
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+if (!string.IsNullOrEmpty(supabaseUrl) && !string.IsNullOrEmpty(supabaseKey))
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    builder.Services.AddScoped<Supabase.Client>(_ => 
+        new Supabase.Client(supabaseUrl, supabaseKey));
 }
 
-app.UseHttpsRedirection();
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
+    c.RoutePrefix = "swagger";
+});
+
 app.UseAuthorization();
 app.MapControllers();
 
