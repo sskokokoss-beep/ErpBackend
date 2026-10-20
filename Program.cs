@@ -42,17 +42,17 @@ var app = builder.Build();
 // 5. เปิดใช้งาน Forwarded Headers (ต้องวางไว้ก่อน Routing หรือ Swagger เสมอ)
 app.UseForwardedHeaders();
 
-// 6. เปิดใช้งาน Swagger
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+// 6. เปิดใช้งาน Swagger และบังคับใช้โครงสร้าง V2
+app.UseSwagger(c =>
 {
-    // ใช้ Absolute Path ที่ขึ้นต้นด้วย / เพื่อป้องกันปัญหา Path ซ้อนกันบน Render
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
-    
-    // พิมพ์ /swagger ท้าย URL เพื่อเข้าดู UI (หากต้องการให้อยู่หน้าแรกเลย ให้เปลี่ยนเป็น string.Empty)
-    c.RoutePrefix = "swagger"; 
+    c.SerializeAsV2 = true;
 });
 
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
+    c.RoutePrefix = "swagger"; 
+});
 app.UseAuthorization();
 app.MapControllers();
 
