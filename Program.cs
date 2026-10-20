@@ -19,12 +19,13 @@ if (!string.IsNullOrEmpty(supabaseUrl) && !string.IsNullOrEmpty(supabaseKey))
 
 var app = builder.Build();
 
-// Configure HTTP pipeline
+// Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
+    // ชี้ Path ไปที่ /swagger/v1/swagger.json ตรงๆ ตามรูปภาพ
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
-    c.RoutePrefix = string.Empty; // กำหนดให้เปิดหน้าแรก (Root URL) แล้วเจอ Swagger เลย
+    c.RoutePrefix = "swagger";
 });
 
 app.UseAuthorization();
