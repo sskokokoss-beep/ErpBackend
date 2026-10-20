@@ -3,7 +3,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// กำหนดรายละเอียด OpenApiDoc ให้ชัดเจน
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "ErpBackend API",
+        Version = "v1"
+    });
+});
 
 // Supabase Config
 var supabaseUrl = builder.Configuration["Supabase:Url"] 
@@ -19,11 +28,12 @@ if (!string.IsNullOrEmpty(supabaseUrl) && !string.IsNullOrEmpty(supabaseKey))
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// เปิดใช้งาน Swagger เสมอ
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ErpBackend v1");
+    // ใช้ Relative path เพื่อป้องกันปัญหาเกี่ยวกับ Domain บน Render
+    c.SwaggerEndpoint("./v1/swagger.json", "ErpBackend v1");
     c.RoutePrefix = "swagger";
 });
 
